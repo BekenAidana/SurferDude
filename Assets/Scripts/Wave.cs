@@ -1,23 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Wave : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private Vector3 initialWavePosition = new Vector3(-25f, -1.2f, 0);
+    
     void Start()
     {
-        
+        ResetWave();
     }
 
-    // Update is called once per frame
+    public void ResetWave()
+    {
+        transform.position = initialWavePosition;
+    }
+
     void Update()
     {
-        transform.position = new Vector3(-5+Time.time, transform.position.y, transform.position.z);
+        float moveDirection = GameManager.Instance.isBoosting ? -1f : 1f;
+        
+        if(GameManager.Instance.currentState == GameState.Playing )
+        {
+            transform.Translate(moveDirection * Time.deltaTime, 0f, 0f);
+            if(transform.position.x<=initialWavePosition.x)
+            {
+                transform.position = initialWavePosition;
+            }
+        }
+
+        if(transform.position.x > 0)
+        {
+            GameManager.Instance.GameOver();
+        }
+
     }
-    void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("jihn");
-        Debug.Log($"{other.name} entered the trigger of {gameObject.name}");
-    }
+
 }
